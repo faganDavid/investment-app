@@ -1,42 +1,77 @@
-{% extends "index.html" %}
+{% extends "home.html" %}
 
 {% block title %} Login {% endblock %}
 
 {% block content %}
 
-<form method="POST">
+<div class="container-fluid">
 
-    <h3 align="center">Login</h3>
+    <form method="POST">
 
-    <div class="mb3">
+        <h3 align="left">Login</h3>
 
-        <label for="email" class="form-label">Email Address</label>
-        <input type="email"
-               class="form-control"
-               id="email"
-               name="email"
-               placeholder="Enter email">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <br>
 
-    </div>
+        <div class="mb3">
 
-    <div class="mb3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email"
+                   class="form-control"
+                   id="email"
+                   name="email"
+                   placeholder="Enter email">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
 
-        <label for="password" class="form-label">Password</label>
-        <input type="password"
-               class="form-control"
-               id="password"
-               name="password"
-               placeholder="Enter Password">
+        </div>
 
-    </div>
+        <br>
+
+        <div class="mb3">
+
+            <label for="password" class="form-label">Password</label>
+            <input type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"
+                   placeholder="Enter Password">
+
+        </div>
 
 
-    <br>
+        <br>
 
-    <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary">Login</button>
 
 
-</form>
+    </form>
+
+        <div class="container-fluid">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+
+                {% for category, message in messages %}
+                {% if category == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert">
+                    </button>
+                </div>
+                {% else %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert">
+                    </button>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+            {% endif %}
+            {% endwith %}
+
+
+        </div>
+
+</div>
 
 {% endblock %}

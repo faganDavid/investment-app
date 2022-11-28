@@ -1,4 +1,8 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, redirect, render_template, request, flash, session, url_for
+from flask_login import login_required, logout_user, current_user, login_user
+from .forms import SignUpForm, LoginForm
+from .models import db, User
+from . import login_manager
 
 
 auth = Blueprint('auth', __name__)
@@ -16,21 +20,17 @@ def logout():
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        firstName = request.form.get('firstName')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
-
-        if len(email) < 4:
-            flash('Email must be greater than 4 characters', category='error')
-        elif len(firstName) < 2:
-            flash('First name must be greater than 1 character', category='error')
-        elif password1 != password2:
-            flash('Entered passwords are different', category='error')
-        elif len(password1) < 1:
-            flash('Password must be at least 7 characters', category='error')
-        else:
-            flash('Account created', category='success')
-
-    return render_template("sign_up.html")
+    form = SignUpForm()
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(emai=form.email.data).first()
+        if existing_user is None:
+            user = User()
+            user.name = form.name.data
+            user.email = form.email.data
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for('views.home'))
+        flash("A user already exists with that email address.")
+    return render_template("sign_up.html", form=form)

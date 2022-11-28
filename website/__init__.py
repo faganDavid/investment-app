@@ -1,21 +1,36 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from config import SECRET_KEY, DATABASE_URI
 
 # initialize database
 db = SQLAlchemy()
-DB_NAME = "database.db"
+
+# initialize login manager
+login_manager = LoginManager()
 
 
 def create_app():
+    """Construct the core app object"""
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'abcdef'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+
+    app.config['SECRET_KEY'] = SECRET_KEY
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+
+    # initialize plugins
     db.init_app(app)
+    login_manager.init_app(app)
 
-    from .routes import routes
-    from .auth import auth
+    with app.app_context():
 
-    app.register_blueprint(routes, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+        from .views import views
+        from .auth import auth
 
-    return app
+        # register blueprints
+        app.register_blueprint(views, url_prefix='/')
+        app.register_blueprint(auth, url_prefix='/')
+
+        # create database models
+        db.create_all()
+
+        return app

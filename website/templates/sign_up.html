@@ -1,63 +1,98 @@
-{% extends "index.html" %}
+{% extends "home.html" %}
 
 {% block title %} Sign Up {% endblock %}
 
 {% block content %}
 
-<form method="POST">
+<div class="container-fluid">
+        <div class="form-wrapper">
 
-    <h3 align="center">Sign Up</h3>
+        <div class="logo">
+          <img
+            src="{{ url_for('static', filename='dist/img/logo.png') }}"
+            alt="logo"
+          />
+        </div>
 
-    <div class="mb3">
+        {% for message in get_flashed_messages() %}
+          <div class="alert alert-warning">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="alert">
+              x
+            </button>
+            {{ message }}
+          </div>
+        {% endfor %}
 
-        <label for="email" class="form-label">Email Address</label>
-        <input type="email"
-               class="form-control"
-               id="email"
-               name="email"
-               placeholder="Enter email">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <h1>Sign Up</h1>
 
-    </div>
+        <form method="POST" action="/signup">
+          {{ form.csrf_token }}
 
-    <div class="mb3">
+          <fieldset class="name">
+            {{ form.name.label }}
+            {{ form.name(placeholder='John Smith') }}
+            {% if form.name.errors %}
+              <ul class="errors">
+                {% for error in form.email.errors %}
+                  <li>{{ error }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+          </fieldset>
 
-        <label for="firstName" class="form-label">First Name</label>
-        <input type="text"
-               class="form-control"
-               id="firstName"
-               name="firstName"
-               placeholder="Enter First Name">
+          <fieldset class="email">
+            {{ form.email.label }}
+            {{ form.email(placeholder='youremail@example.com') }}
+            {% if form.email.errors %}
+              <ul class="errors">
+                {% for error in form.email.errors %}
+                  <li>{{ error }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+          </fieldset>
 
-    </div>
+          <fieldset class="password">
+            {{ form.password.label }}
+            {{ form.password }}
+            {% if form.password.errors %}
+              <ul class="errors">
+                {% for error in form.password.errors %}
+                  <li>{{ error }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+          </fieldset>
 
-    <div class="mb3">
+          <fieldset class="confirm">
+            {{ form.confirm.label }}
+            {{ form.confirm }}
+            {% if form.confirm.errors %}
+              <ul class="errors">
+                {% for error in form.confirm.errors %}
+                  <li>{{ error }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+          </fieldset>
 
-        <label for="password1" class="form-label">Password</label>
-        <input type="password"
-               class="form-control"
-               id="password1"
-               name="password1"
-               placeholder="Enter Password">
+          <fieldset class="website">
+            {{ form.website.label }}
+            {{ form.website(placeholder='https://example.com') }}
+          </fieldset>
 
-    </div>
+          <div class="submit-button">
+            {{ form.submit }}
+          </div>
 
-    <div class="mb3">
+        </form>
 
-        <label for="password2" class="form-label">Password (Confirm)</label>
-        <input type="password"
-               class="form-control"
-               id="password2"
-               name="password2"
-               placeholder="Confirm Password">
-
-    </div>
-
-    <br>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-
-
-</form>
+        <div class="login-signup">
+          <div>
+            <span>Already have an account?</span>
+            <a href="{{ url_for('auth_bp.login') }}">Log in.</a>
+          </div>
+        </div>
+      </div>
+</div>
 
 {% endblock %}
